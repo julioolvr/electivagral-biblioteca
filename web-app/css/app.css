@@ -1,3 +1,13 @@
+body {
+	background: #bcc6c5;
+}
+
+.row.header {
+	width: 100%;
+	background: #504d44;
+	color: #fff;
+}
+
 .loginForm.panel {
 	padding: 8px;
 }
@@ -6,13 +16,8 @@
 	line-height: 15px;
 }
 
-.loginForm input[type=text],
-.loginForm input[type=password] {
-/* 	font-size: 12px; */
-/* 	height: 28px; */
-}
-
 .row.footer {
-	background: #F2F2F2;
-	border: solid 1px #E6E6E6
+	background: #504d44;
+	color: #fff;
+	border: solid 1px #E6E6E6;
 }

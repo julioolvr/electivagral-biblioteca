@@ -1,0 +1,12 @@
+#ultimos-libros {
+	background: #504d44;
+}
+
+.coverLibro {
+	background: #504d44;
+	color: white;
+}
+
+.coverLibro img {
+	width: 100%;
+}
