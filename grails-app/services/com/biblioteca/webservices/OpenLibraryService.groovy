@@ -8,7 +8,7 @@ package com.biblioteca.webservices
 class OpenLibraryService {
 	
 	def urlCover(libro) {
-		"http://covers.openlibrary.org/b/isbn/${libro.isbn}-L.jpg"
+		new URL("http://covers.openlibrary.org/b/isbn/${libro.isbn}-L.jpg")
 	}
 	
 }

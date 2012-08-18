@@ -94,3 +94,8 @@ log4j = {
 grails.plugins.springsecurity.userLookup.userDomainClassName = 'com.biblioteca.Usuario'
 grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'com.biblioteca.UsuarioRol'
 grails.plugins.springsecurity.authority.className = 'com.biblioteca.Rol'
+
+grails.gorm.default.mapping = {
+	version false
+	autoTimestamp false
+}
