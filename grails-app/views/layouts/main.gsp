@@ -8,12 +8,14 @@
 		<link rel="apple-touch-icon" href="${resource(dir: 'images', file: 'apple-touch-icon.png')}">
 		<link rel="apple-touch-icon" sizes="114x114" href="${resource(dir: 'images', file: 'apple-touch-icon-retina.png')}">
 		<link rel="stylesheet" href="${resource(dir: 'css', file: 'app.css')}" type="text/css">
+		<link rel="stylesheet" href="${resource(dir: 'css/ui-darkness', file: 'jquery-ui-1.8.23.custom.css')}" type="text/css">
 		<link rel="stylesheet" href="${resource(dir: 'css', file: 'foundation.css')}" type="text/css">
 		
 		<!-- IE Fix for HTML5 Tags -->
 		<!--[if lt IE 9]>
 			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
+		<r:require module="application" />
 		<g:layoutHead/>
 		<r:layoutResources />
 	</head>
@@ -43,7 +45,6 @@
 				Julio Olivera<br/>3901-0393
 			</div>
 		</div>
-		<g:javascript library="application"/>
 		<r:layoutResources />
 	</body>
 </html>

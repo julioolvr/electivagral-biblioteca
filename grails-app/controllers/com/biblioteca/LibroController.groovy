@@ -1,5 +1,7 @@
 package com.biblioteca
 
+import grails.converters.JSON
+
 import org.springframework.dao.DataIntegrityViolationException
 
 class LibroController {
@@ -41,62 +43,78 @@ class LibroController {
 		[libro: libro]
 	}
 
-    def edit(Long id) {
-        def libroInstance = Libro.get(id)
-        if (!libroInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'libro.label', default: 'Libro'), id])
-            redirect(action: "list")
-            return
-        }
+	def edit(Long id) {
+		def libroInstance = Libro.get(id)
+		if (!libroInstance) {
+			flash.message = message(code: 'default.not.found.message', args: [message(code: 'libro.label', default: 'Libro'), id])
+			redirect(action: "list")
+			return
+		}
 
-        [libroInstance: libroInstance]
-    }
+		[libroInstance: libroInstance]
+	}
 
-    def update(Long id, Long version) {
-        def libroInstance = Libro.get(id)
-        if (!libroInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'libro.label', default: 'Libro'), id])
-            redirect(action: "list")
-            return
-        }
+	def update(Long id, Long version) {
+		def libroInstance = Libro.get(id)
+		if (!libroInstance) {
+			flash.message = message(code: 'default.not.found.message', args: [message(code: 'libro.label', default: 'Libro'), id])
+			redirect(action: "list")
+			return
+		}
 
-        if (version != null) {
-            if (libroInstance.version > version) {
-                libroInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                          [message(code: 'libro.label', default: 'Libro')] as Object[],
-                          "Another user has updated this Libro while you were editing")
-                render(view: "edit", model: [libroInstance: libroInstance])
-                return
-            }
-        }
+		if (version != null) {
+			if (libroInstance.version > version) {
+				libroInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
+						[message(code: 'libro.label', default: 'Libro')] as Object[],
+							"Another user has updated this Libro while you were editing")
+				render(view: "edit", model: [libroInstance: libroInstance])
+				return
+			}
+		}
 
-        libroInstance.properties = params
+		libroInstance.properties = params
 
-        if (!libroInstance.save(flush: true)) {
-            render(view: "edit", model: [libroInstance: libroInstance])
-            return
-        }
+		if (!libroInstance.save(flush: true)) {
+			render(view: "edit", model: [libroInstance: libroInstance])
+			return
+		}
 
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'libro.label', default: 'Libro'), libroInstance.id])
-        redirect(action: "show", id: libroInstance.id)
-    }
+		flash.message = message(code: 'default.updated.message', args: [message(code: 'libro.label', default: 'Libro'), libroInstance.id])
+		redirect(action: "show", id: libroInstance.id)
+	}
 
-    def delete(Long id) {
-        def libroInstance = Libro.get(id)
-        if (!libroInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'libro.label', default: 'Libro'), id])
-            redirect(action: "list")
-            return
-        }
+	def delete(Long id) {
+		def libroInstance = Libro.get(id)
+		if (!libroInstance) {
+			flash.message = message(code: 'default.not.found.message', args: [message(code: 'libro.label', default: 'Libro'), id])
+			redirect(action: "list")
+			return
+		}
 
-        try {
-            libroInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'libro.label', default: 'Libro'), id])
-            redirect(action: "list")
-        }
-        catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'libro.label', default: 'Libro'), id])
-            redirect(action: "show", id: id)
-        }
-    }
+		try {
+			libroInstance.delete(flush: true)
+			flash.message = message(code: 'default.deleted.message', args: [message(code: 'libro.label', default: 'Libro'), id])
+			redirect(action: "list")
+		}
+		catch (DataIntegrityViolationException e) {
+			flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'libro.label', default: 'Libro'), id])
+			redirect(action: "show", id: id)
+		}
+	}
+	
+	def autocomplete() {
+		def titulo = params.term
+		def libros = buscar(titulo)
+		
+		render (libros.collect {
+			[
+				label: it.toString(),
+				value: it.toString()
+			] as JSON
+		}) as JSON
+	}
+	
+	def buscar(titulo) {
+		Libro.findAllByTituloLike "%${titulo}%"
+	}
 }

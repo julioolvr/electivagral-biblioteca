@@ -4,10 +4,11 @@
 	<head>
 		<meta name="layout" content="main">
 		<g:set var="entityName" value="${message(code: 'prestamo.label', default: 'Prestamo')}" />
+		<r:require module="prestamoCreate"/>
 		<title><g:message code="default.create.label" args="[entityName]" /></title>
 	</head>
 	<body>
-		<div id="create-prestamo" class="content scaffold-create" role="main">
+		<div id="create-prestamo" class="content row" role="main">
 			<h1><g:message code="default.create.label" args="[entityName]" /></h1>
 			<g:if test="${flash.message}">
 			<div class="message" role="status">${flash.message}</div>

@@ -1,13 +1,13 @@
 <%@ page import="com.biblioteca.Prestamo" %>
 
 
-
 <div class="fieldcontain ${hasErrors(bean: prestamo, field: 'libro', 'error')} required">
 	<label for="libro">
 		<g:message code="prestamo.libro.label" default="Libro" />
 		<span class="required-indicator">*</span>
 	</label>
-	<g:select id="libro" name="libro.id" from="${com.biblioteca.Libro.list()}" optionKey="id" required="" value="${prestamo?.libro?.id}" class="many-to-one"/>
+	<input type="text" id="libro" />
+<%--	<g:select id="libro" name="libro.id" from="${com.biblioteca.Libro.list()}" optionKey="id" required="" value="${prestamo?.libro?.id}" class="many-to-one"/>--%>
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: prestamo, field: 'socio', 'error')} required">
