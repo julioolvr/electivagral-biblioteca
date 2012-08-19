@@ -20,10 +20,18 @@
 	<body>
 		<div class="row header">
 			<div class="eight columns">
-				<h1>${message(code:'app.titulo')}</h1>
+				<h1><a href="${createLink(controller:'index')}">${message(code:'app.titulo')}</a></h1>
 			</div>
 			<div class="four columns">
-				<g:render template="/login/loginForm" />
+				<g:render template="/auth/authPanel" />
+			</div>
+		</div>
+		<div class="row">
+			<div class="six columns centered">
+				<ul class="nav-bar">
+					<li class="${params.controller == 'index' ? 'active' : ''}"><a href="${createLink(controller:'index')}">Inicio</a></li>
+					<li class="${params.controller == 'libro' ? 'active' : ''}"><a href="${createLink(controller:'libro')}">Libros</a></li>
+				</ul>
 			</div>
 		</div>
 		<g:layoutBody/>

@@ -28,4 +28,5 @@ class Socio {
 		prestamos column: 'idSocio'
 		reservas column: 'idSocio'
 	}
+	
 }

@@ -4,42 +4,42 @@ import org.springframework.dao.DataIntegrityViolationException
 
 class LibroController {
 
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+	static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-    def index() {
-        redirect(action: "list", params: params)
-    }
+	def index() {
+		redirect(action: "list", params: params)
+	}
 
-    def list(Integer max) {
-        params.max = Math.min(max ?: 10, 100)
-        [libroInstanceList: Libro.list(params), libroInstanceTotal: Libro.count()]
-    }
+	def list(Integer max) {
+		params.max = Math.min(max ?: 10, 100)
+		[listaLibros: Libro.list(params), totalLibros: Libro.count()]
+	}
 
-    def create() {
-        [libroInstance: new Libro(params)]
-    }
+	def create() {
+		[libroInstance: new Libro(params)]
+	}
 
-    def save() {
-        def libroInstance = new Libro(params)
-        if (!libroInstance.save(flush: true)) {
-            render(view: "create", model: [libroInstance: libroInstance])
-            return
-        }
+	def save() {
+		def libroInstance = new Libro(params)
+		if (!libroInstance.save(flush: true)) {
+			render(view: "create", model: [libroInstance: libroInstance])
+			return
+		}
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'libro.label', default: 'Libro'), libroInstance.id])
-        redirect(action: "show", id: libroInstance.id)
-    }
+		flash.message = message(code: 'default.created.message', args: [message(code: 'libro.label', default: 'Libro'), libroInstance.id])
+		redirect(action: "show", id: libroInstance.id)
+	}
 
-    def show(Long id) {
-        def libroInstance = Libro.get(id)
-        if (!libroInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'libro.label', default: 'Libro'), id])
-            redirect(action: "list")
-            return
-        }
+	def show(Long id) {
+		def libro = Libro.get(id)
+		if (!libro) {
+			flash.message = message(code: 'default.not.found.message', args: [message(code: 'libro.label', default: 'Libro'), id])
+			redirect(action: "list")
+			return
+		}
 
-        [libroInstance: libroInstance]
-    }
+		[libro: libro]
+	}
 
     def edit(Long id) {
         def libroInstance = Libro.get(id)

@@ -36,7 +36,7 @@ class Libro {
 	 * URL para una imagen del cover del libro.
 	 * @return
 	 */
-	URL getUrlCover() {
+	String getUrlCover() {
 		coverLibroService.urlCover(this)
 	}
 	

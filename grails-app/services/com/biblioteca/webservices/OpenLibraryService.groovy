@@ -8,7 +8,19 @@ package com.biblioteca.webservices
 class OpenLibraryService {
 	
 	def urlCover(libro) {
-		new URL("http://covers.openlibrary.org/b/isbn/${libro.isbn}-L.jpg")
+		new URL("http://covers.openlibrary.org/b/isbn/${libro.isbn}-L.jpg?default=false")
+	}
+	
+	def coverDisponible(libro) {
+		def url = urlCover(libro)
+		
+		try {
+			url.getBytes()
+		} catch (e) {
+			return false
+		}
+		
+		return true
 	}
 	
 }

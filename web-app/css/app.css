@@ -1,5 +1,5 @@
-body {
-	background: #bcc6c5;
+h1 a, h1 a:hover, h1 a:visited, h1 a:active {
+	color: #fff;
 }
 
 .row.header {
@@ -8,7 +8,8 @@ body {
 	color: #fff;
 }
 
-.loginForm.panel {
+.auth.panel {
+	height: 127px;
 	padding: 8px;
 }
 
@@ -16,8 +17,20 @@ body {
 	line-height: 15px;
 }
 
+.loginForm .asociarse {
+	line-height: 24px;
+}
+
+.row.container {
+	margin-bottom: 10px;
+}
+
 .row.footer {
 	background: #504d44;
 	color: #fff;
 	border: solid 1px #E6E6E6;
+}
+
+.container .error small, .container small.error {
+	font-size: 0.8rem;
 }
