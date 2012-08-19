@@ -29,4 +29,8 @@ class Socio {
 		reservas column: 'idSocio'
 	}
 	
+	String toString() {
+		"${dni} - ${nombre}"
+	}
+	
 }

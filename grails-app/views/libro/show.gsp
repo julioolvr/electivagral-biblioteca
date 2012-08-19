@@ -17,11 +17,22 @@
 				<h4>${libro.autor}</h4>
 				
 				<p>
+					<g:if test="${!libro.hayStockDisponible}">
+						<span class="radius alert label">Sin stock</span>
+					</g:if>
+				</p>
+				
+				<p>
 					<span id="isbn-label" class="property-label"><g:message code="libro.isbn" /></span>
 					<span class="property-value" aria-labelledby="isbn-label"><g:fieldValue bean="${libro}" field="isbn"/></span>
 				</p>
 				
-				<a href="#">Solicitar préstamo</a>
+				<g:if test="${session.usuario}">
+					<a href="${createLink(controller:'prestamo', action:'create', params:[idLibro:libro.id])}">Solicitar préstamo</a>
+				</g:if>
+				<g:else>
+					Iniciá sesión para solicitar un préstamo
+				</g:else>
 				<a href="${createLink(controller:'libro')}">Volver</a>
 <%--				<g:form>--%>
 <%--					<fieldset class="buttons">--%>

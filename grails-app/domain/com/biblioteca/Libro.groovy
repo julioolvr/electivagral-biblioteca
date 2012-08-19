@@ -27,6 +27,10 @@ class Libro {
 		reservas column: 'idLibro'
 	}
 	
+	String toString() {
+		"${titulo} [${autor}]"
+	}
+	
 	/*
 	 *  Inyección de servicios
 	 */
