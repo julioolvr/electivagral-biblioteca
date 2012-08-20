@@ -109,7 +109,8 @@ class LibroController {
 		render (libros.collect {
 			[
 				label: it.toString(),
-				value: it.toString()
+				value: it.toString(),
+				id: it.id
 			] as JSON
 		}) as JSON
 	}
