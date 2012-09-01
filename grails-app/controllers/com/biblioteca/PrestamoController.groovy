@@ -83,14 +83,14 @@ class PrestamoController {
 			return
 		}
 		
-		def prestamoInstance = Prestamo.get(id)
-		if (!prestamoInstance) {
+		def prestamo = Prestamo.get(id)
+		if (!prestamo) {
 			flash.message = message(code: 'default.not.found.message', args: [message(code: 'prestamo.label', default: 'Prestamo'), id])
 			redirect(action: "list")
 			return
 		}
 
-		[prestamoInstance: prestamoInstance]
+		[prestamo: prestamo]
 	}
 
 	def edit(Long id) {
@@ -150,5 +150,44 @@ class PrestamoController {
 			flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'prestamo.label', default: 'Prestamo'), id])
 			redirect(action: "show", id: id)
 		}
+	}
+	
+	def renovar(Long id) {
+		def prestamo = Prestamo.get(id)
+		if (!prestamo) {
+			flash.message = message(code: 'default.not.found.message', args: [message(code: 'prestamo.label', default: 'Prestamo'), id])
+			redirect(action: "list")
+			return
+		}
+		
+		if (prestamo.libro.tieneReservas()) {
+			// TODO: i18n
+			flash.message = 'Este libro tiene reservas pendientes, no se puede renovar el préstamo.'
+			redirect(action: "list")
+			return
+		}
+		
+		[prestamo: prestamo]
+	}
+	
+	def generarRenovacion(Long id) {
+		def prestamo = Prestamo.get(id)
+		if (!prestamo) {
+			flash.message = message(code: 'default.not.found.message', args: [message(code: 'prestamo.label', default: 'Prestamo'), id])
+			redirect(action: "list")
+			return
+		}
+		
+		if (prestamo.libro.tieneReservas()) {
+			// TODO: i18n
+			flash.message = 'Este libro tiene reservas pendientes, no se puede renovar el préstamo.'
+			redirect(action: "list")
+			return
+		}
+		
+		prestamo.fechaDevolucion = new Date() + grailsApplication.config.prestamo.limiteDevolucion
+		prestamo.save()
+		
+		redirect action: 'show', id: prestamo.id
 	}
 }

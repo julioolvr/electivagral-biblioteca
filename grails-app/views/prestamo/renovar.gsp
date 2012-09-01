@@ -5,12 +5,12 @@
 	<head>
 		<meta name="layout" content="main">
 		<g:set var="entityName" value="${message(code: 'prestamo.label', default: 'Prestamo')}" />
-		<title><g:message code="default.show.label" args="[entityName]" /></title>
+		<title>Renovar préstamo</title>
 	</head>
 	<body>
 		<div id="show-prestamo" class="content scaffold-show" role="main">
 			<div class="container row">
-				<h2>Mis préstamos</h2>
+				<h2>Renovar préstamo</h2>
 				<g:if test="${flash.message}">
 				<div class="message" role="status">${flash.message}</div>
 				</g:if>
@@ -51,14 +51,16 @@
 						
 					</li>
 					</g:if>
+				
+					<div class="alert-box">
+						Cuando no hay reservas pendientes para el libro, puede renovar el préstamo por ${grailsApplication.config.prestamo.limiteDevolucion} días más.
+					</div>
 					
 				</ul>
 				<g:form>
 					<fieldset class="buttons">
-						<g:hiddenField name="id" value="${prestamo?.id}" />
-						<a href="${createLink(action:'renovar', id:prestamo.id)}">Renovar préstamo</a>
-						<g:link class="edit" action="edit" id="${prestamo?.id}"><g:message code="default.button.edit.label" default="Edit" /></g:link>
-						<g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
+						<a href="${createLink(action:'generarRenovacion', id:prestamo.id)}">Renovar</a>
+						<a href="${createLink(action:'show', id:prestamo.id)}">Volver</a>
 					</fieldset>
 				</g:form>
 			</div>

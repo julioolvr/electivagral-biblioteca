@@ -6,6 +6,7 @@ class Prestamo {
 	Socio socio
 	Date fechaPedido
 	Date fechaDevolucion
+	Date fechaRealDevolucion
 	
 	static constraints = {
 		libro nullable: false, validator: {
@@ -16,6 +17,9 @@ class Prestamo {
 		fechaDevolucion validator: { val, obj ->
 			val > obj.fechaPedido
 		}
+		fechaRealDevolucion nullable: true, validator: { val, obj ->
+			!val || val > obj.fechaPedido
+		}
 	}
 	
 	static mapping = {
@@ -25,6 +29,7 @@ class Prestamo {
 		socio column: 'idSocio'
 		fechaPedido column: 'fechaPedido'
 		fechaDevolucion column: 'fechaDevolucion'
+		fechaRealDevolucion column: 'fechaRealDevolucion'
 	}
 	
 	Prestamo() {

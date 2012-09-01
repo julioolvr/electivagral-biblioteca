@@ -51,4 +51,9 @@ class Libro {
 	Boolean getHayStockDisponible() {
 		ejemplaresDisponibles > 0
 	}
+	
+	Boolean tieneReservas() {
+		// TODO: Ver, esto puede cambiar a un Reserva.findAllByLibroAndFechaFinReservaIsNull
+		ejemplaresDisponibles < 0
+	}
 }
