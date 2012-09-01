@@ -186,4 +186,15 @@ class PrestamoController {
 		
 		redirect action: 'show', id: prestamo.id
 	}
+	
+	def devolver(Long id) {
+		// TODO: Agregar validación de usuario
+		conPrestamo(id) { prestamo ->
+			prestamo.fechaRealDevolucion = new Date()
+			prestamo.libro.ejemplaresDisponibles++
+			prestamo.save()
+			flash.message = 'Se ha devuelto el libro'
+			redirect action: 'list'
+		}
+	}
 }

@@ -12,7 +12,7 @@
 			<div class="container row">
 				<h2><g:message code="default.list.label" args="[entityName]" /></h2>
 				<g:if test="${flash.message}">
-				<div class="message" role="status">${flash.message}</div>
+					<div class="alert-box" role="status">${flash.message}</div>
 				</g:if>
 				<table>
 					<thead>
@@ -25,6 +25,8 @@
 							<g:sortableColumn property="fechaPedido" title="${message(code: 'prestamo.fechaPedido.label', default: 'Fecha Pedido')}" />
 						
 							<g:sortableColumn property="fechaDevolucion" title="${message(code: 'prestamo.fechaDevolucion.label', default: 'Fecha Devolucion')}" />
+							
+							<g:sortableColumn property="fechaRealDevolucion" title="${message(code: 'prestamo.fechaDevolucion.label', default: 'Devuelto el')}" />
 						
 						</tr>
 					</thead>
@@ -40,6 +42,7 @@
 						
 							<td><g:formatDate date="${prestamoInstance.fechaDevolucion}" /></td>
 						
+							<td><g:formatDate date="${prestamoInstance.fechaRealDevolucion}" /></td>
 						</tr>
 					</g:each>
 					</tbody>
