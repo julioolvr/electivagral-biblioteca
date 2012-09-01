@@ -12,6 +12,7 @@ class OpenLibraryService {
 	}
 	
 	def coverDisponible(libro) {
+		return false
 		def url = urlCover(libro)
 		
 		try {

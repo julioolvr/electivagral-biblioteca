@@ -18,6 +18,9 @@ class PrestamoController {
 	def create() {
 		def parametros = [socio:session.usuario]
 		
+		println 'CREAR PRESTAMO'
+		println params
+		
 		if (params.idLibro) {
 			parametros += [libro:Libro.get(params.idLibro)]
 		}
@@ -26,14 +29,16 @@ class PrestamoController {
 	}
 
 	def save() {
-		def prestamoInstance = new Prestamo(params)
-		if (!prestamoInstance.save(flush: true)) {
-			render(view: "create", model: [prestamoInstance: prestamoInstance])
+		def prestamo = new Prestamo(params)
+		if (!prestamo.save(flush: true)) {
+			println 'ERROR'
+			println prestamo.errors
+			render(view: "create", model: [prestamo: prestamo])
 			return
 		}
 
-		flash.message = message(code: 'default.created.message', args: [message(code: 'prestamo.label', default: 'Prestamo'), prestamoInstance.id])
-		redirect(action: "show", id: prestamoInstance.id)
+		flash.message = message(code: 'default.created.message', args: [message(code: 'prestamo.label', default: 'Prestamo'), prestamo.id])
+		redirect(action: "show", id: prestamo.id)
 	}
 
 	def show(Long id) {

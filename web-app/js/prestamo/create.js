@@ -3,7 +3,7 @@ $(document).ready(function(){
 		minLength: 2,
 		source: '/biblioteca/libro/autocomplete',
 		select: function(event, ui) {
-			console.log(event, ui);
+			$('#libro\\.id').val(ui.item.id)
 		}
 	});
 });

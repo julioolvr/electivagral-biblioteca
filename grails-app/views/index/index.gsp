@@ -15,7 +15,7 @@
 								<img src="${it.urlCover}"/>
 							</div>
 							<div class="eight columns">
-								<h3>${it.titulo}</h3>
+								<h3><a href="${createLink(controller: 'libro', action: 'show', id: it.id)}">${it.titulo}</a></h3>
 								<h5>${it.autor}</h5>
 							</div>
 						</div>
