@@ -2,6 +2,7 @@ package com.biblioteca
 
 import org.springframework.dao.DataIntegrityViolationException
 
+@Mixin(com.biblioteca.mixins.PrestamosHelper)
 class PrestamoController {
 
 	static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
@@ -83,14 +84,9 @@ class PrestamoController {
 			return
 		}
 		
-		def prestamo = Prestamo.get(id)
-		if (!prestamo) {
-			flash.message = message(code: 'default.not.found.message', args: [message(code: 'prestamo.label', default: 'Prestamo'), id])
-			redirect(action: "list")
-			return
+		conPrestamo(id) { prestamo ->
+			[prestamo: prestamo]
 		}
-
-		[prestamo: prestamo]
 	}
 
 	def edit(Long id) {
