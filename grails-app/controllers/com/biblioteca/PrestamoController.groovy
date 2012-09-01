@@ -13,8 +13,19 @@ class PrestamoController {
 	}
 
 	def list(Integer max) {
+		if (!session.usuario) {
+			/*
+			 * Debe estar logueado para realizar un préstamo
+			 */
+			// TODO: i18n
+			// TODO: Mover a un filter
+			flash.message = "Debe estar logueado para solicitar un préstamo"
+			redirect controller: 'index'
+			return
+		}
+		
 		params.max = Math.min(max ?: 10, 100)
-		[prestamoInstanceList: Prestamo.list(params), prestamoInstanceTotal: Prestamo.count()]
+		[prestamoInstanceList: Prestamo.findAllBySocio(session.usuario, params), prestamoInstanceTotal: Prestamo.count()]
 	}
 
 	def create() {
