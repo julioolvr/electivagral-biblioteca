@@ -12,7 +12,7 @@
 			<div class="container row">
 				<h2>Mis préstamos</h2>
 				<g:if test="${flash.message}">
-				<div class="message" role="status">${flash.message}</div>
+					<div class="alert-box" role="status">${flash.message}</div>
 				</g:if>
 				<ul class="property-list prestamo">
 				

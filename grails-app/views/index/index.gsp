@@ -7,7 +7,7 @@
 	<body>
 		<div class="row">
 			<g:if test="${flash.message}">
-				<div class="alert-box" role="status">${flash.message}</div>
+				<div class="alert-box ${flash.error ? 'alert' : ''}" role="status">${flash.message}</div>
 			</g:if>
 			<h2><g:message code="general.ultimosLibros"/></h2>
 			<div class="eight columns">

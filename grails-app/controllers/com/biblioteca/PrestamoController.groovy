@@ -2,7 +2,7 @@ package com.biblioteca
 
 import org.springframework.dao.DataIntegrityViolationException
 
-@Mixin(com.biblioteca.mixins.PrestamosHelper)
+@Mixin([com.biblioteca.mixins.PrestamosHelper, com.biblioteca.mixins.UsuariosHelper])
 class PrestamoController {
 
 	static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
@@ -14,78 +14,53 @@ class PrestamoController {
 	}
 
 	def list(Integer max) {
-		if (!session.usuario) {
-			/*
-			 * Debe estar logueado para realizar un préstamo
-			 */
-			// TODO: i18n
-			// TODO: Mover a un filter
-			flash.message = "Debe estar logueado para solicitar un préstamo"
-			redirect controller: 'index'
-			return
+		conUsuarioLogueado { socio ->
+			params.max = Math.min(max ?: 10, 100)
+			[prestamoInstanceList: Prestamo.findAllBySocio(socio, params), prestamoInstanceTotal: Prestamo.count()]
 		}
-		
-		params.max = Math.min(max ?: 10, 100)
-		[prestamoInstanceList: Prestamo.findAllBySocio(session.usuario, params), prestamoInstanceTotal: Prestamo.count()]
 	}
 
 	def create() {
-		if (!session.usuario) {
-			/*
-			 * Debe estar logueado para realizar un préstamo
-			 */
-			// TODO: i18n
-			// TODO: Mover a un filter
-			flash.message = "Debe estar logueado para solicitar un préstamo"
-			redirect controller: 'index'
-			return
+		conUsuarioLogueado { socio ->
+			def parametros = [socio:socio]
+					
+					if (params.idLibro) {
+						parametros += [libro:Libro.get(params.idLibro)]
+					}
+			
+			[prestamo: new Prestamo(params + parametros)]
 		}
-		
-		def parametros = [socio:session.usuario]
-		
-		if (params.idLibro) {
-			parametros += [libro:Libro.get(params.idLibro)]
-		}
-		
-		[prestamo: new Prestamo(params + parametros)]
 	}
 
 	def save() {
-		def parametros = params
-		
-		parametros += [
-			fechaPedido: new Date(),
-			fechaDevolucion: new Date() + grailsApplication.config.prestamo.limiteDevolucion
-		]
-		
-		def prestamo = new Prestamo(parametros)
-		if (!prestamo.save(flush: true)) {
-			render(view: "create", model: [prestamo: prestamo])
-			return
+		conUsuarioLogueado {
+			def parametros = params
+			
+			parametros += [
+				fechaPedido: new Date(),
+				fechaDevolucion: new Date() + grailsApplication.config.prestamo.limiteDevolucion
+			]
+			
+			def prestamo = new Prestamo(parametros)
+			if (!prestamo.save(flush: true)) {
+				render(view: "create", model: [prestamo: prestamo])
+				return
+			}
+			
+			// TODO: Mover a un beforeSave o algo así
+			prestamo.libro.ejemplaresDisponibles--
+			prestamo.libro.save()
+			
+			flash.message = message(code: 'default.created.message', args: [message(code: 'prestamo.label', default: 'Prestamo'), prestamo.id])
+			redirect(action: "show", id: prestamo.id)
 		}
-		
-		// TODO: Mover a un beforeSave o algo así
-		prestamo.libro.ejemplaresDisponibles--
-		prestamo.libro.save()
-		
-		flash.message = message(code: 'default.created.message', args: [message(code: 'prestamo.label', default: 'Prestamo'), prestamo.id])
-		redirect(action: "show", id: prestamo.id)
 	}
 
 	def show(Long id) {
-		if (!session.usuario) {
-			/*
-			 * Debe estar logueado para realizar un préstamo
-			 */
-			// TODO: i18n
-			// TODO: Mover a un filter
-			flash.message = "Debe estar logueado para solicitar un préstamo"
-			redirect controller: 'index'
-			return
-		}
-		
-		conPrestamo(id) { prestamo ->
-			[prestamo: prestamo]
+		conUsuarioLogueado {
+			conPrestamo(id) { prestamo ->
+				[prestamo: prestamo]
+			}
 		}
 	}
 
@@ -149,52 +124,43 @@ class PrestamoController {
 	}
 	
 	def renovar(Long id) {
-		def prestamo = Prestamo.get(id)
-		if (!prestamo) {
-			flash.message = message(code: 'default.not.found.message', args: [message(code: 'prestamo.label', default: 'Prestamo'), id])
-			redirect(action: "list")
-			return
+		conPrestamo(id) { prestamo ->
+			if (prestamo.libro.tieneReservas()) {
+				// TODO: i18n
+				flash.message = 'Este libro tiene reservas pendientes, no se puede renovar el préstamo.'
+				redirect(action: "list")
+				return
+			}
+			
+			[prestamo: prestamo]
 		}
-		
-		if (prestamo.libro.tieneReservas()) {
-			// TODO: i18n
-			flash.message = 'Este libro tiene reservas pendientes, no se puede renovar el préstamo.'
-			redirect(action: "list")
-			return
-		}
-		
-		[prestamo: prestamo]
 	}
 	
 	def generarRenovacion(Long id) {
-		def prestamo = Prestamo.get(id)
-		if (!prestamo) {
-			flash.message = message(code: 'default.not.found.message', args: [message(code: 'prestamo.label', default: 'Prestamo'), id])
-			redirect(action: "list")
-			return
+		conPrestamo(id) { prestamo ->
+			if (prestamo.libro.tieneReservas()) {
+				// TODO: i18n
+				flash.message = 'Este libro tiene reservas pendientes, no se puede renovar el préstamo.'
+						redirect(action: "list")
+						return
+			}
+			
+			prestamo.fechaDevolucion = new Date() + grailsApplication.config.prestamo.limiteDevolucion
+			prestamo.save()
+			flash.message = 'Préstamo renovado'
+			redirect action: 'show', id: prestamo.id
 		}
-		
-		if (prestamo.libro.tieneReservas()) {
-			// TODO: i18n
-			flash.message = 'Este libro tiene reservas pendientes, no se puede renovar el préstamo.'
-			redirect(action: "list")
-			return
-		}
-		
-		prestamo.fechaDevolucion = new Date() + grailsApplication.config.prestamo.limiteDevolucion
-		prestamo.save()
-		
-		redirect action: 'show', id: prestamo.id
 	}
 	
 	def devolver(Long id) {
-		// TODO: Agregar validación de usuario
-		conPrestamo(id) { prestamo ->
-			prestamo.fechaRealDevolucion = new Date()
-			prestamo.libro.ejemplaresDisponibles++
-			prestamo.save()
-			flash.message = 'Se ha devuelto el libro'
-			redirect action: 'list'
+		conUsuarioLogueado {
+			conPrestamo(id) { prestamo ->
+				prestamo.fechaRealDevolucion = new Date()
+				prestamo.libro.ejemplaresDisponibles++
+				prestamo.save()
+				flash.message = 'Se ha devuelto el libro'
+				redirect action: 'list'
+			}
 		}
 	}
 }
