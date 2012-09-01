@@ -5,6 +5,8 @@ import org.springframework.dao.DataIntegrityViolationException
 class PrestamoController {
 
 	static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+	
+	def grailsApplication
 
 	def index() {
 		redirect(action: "list", params: params)
@@ -16,10 +18,18 @@ class PrestamoController {
 	}
 
 	def create() {
-		def parametros = [socio:session.usuario]
+		if (!session.usuario) {
+			/*
+			 * Debe estar logueado para realizar un préstamo
+			 */
+			// TODO: i18n
+			// TODO: Mover a un filter
+			flash.message = "Debe estar logueado para solicitar un préstamo"
+			redirect controller: 'index'
+			return
+		}
 		
-		println 'CREAR PRESTAMO'
-		println params
+		def parametros = [socio:session.usuario]
 		
 		if (params.idLibro) {
 			parametros += [libro:Libro.get(params.idLibro)]
@@ -29,10 +39,15 @@ class PrestamoController {
 	}
 
 	def save() {
-		def prestamo = new Prestamo(params)
+		def parametros = params
+		
+		parametros += [
+			fechaPedido: new Date(),
+			fechaDevolucion: new Date() + grailsApplication.config.prestamo.limiteDevolucion
+		]
+		
+		def prestamo = new Prestamo(parametros)
 		if (!prestamo.save(flush: true)) {
-			println 'ERROR'
-			println prestamo.errors
 			render(view: "create", model: [prestamo: prestamo])
 			return
 		}
@@ -42,6 +57,17 @@ class PrestamoController {
 	}
 
 	def show(Long id) {
+		if (!session.usuario) {
+			/*
+			 * Debe estar logueado para realizar un préstamo
+			 */
+			// TODO: i18n
+			// TODO: Mover a un filter
+			flash.message = "Debe estar logueado para solicitar un préstamo"
+			redirect controller: 'index'
+			return
+		}
+		
 		def prestamoInstance = Prestamo.get(id)
 		if (!prestamoInstance) {
 			flash.message = message(code: 'default.not.found.message', args: [message(code: 'prestamo.label', default: 'Prestamo'), id])

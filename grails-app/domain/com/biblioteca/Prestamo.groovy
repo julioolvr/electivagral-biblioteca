@@ -8,7 +8,9 @@ class Prestamo {
 	Date fechaDevolucion
 	
 	static constraints = {
-		libro nullable: false
+		libro nullable: false, validator: {
+			it.ejemplaresDisponibles > 0
+		}
 		socio nullable: false
 		fechaPedido nullable: false
 		fechaDevolucion validator: { val, obj ->

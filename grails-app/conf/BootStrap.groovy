@@ -15,10 +15,10 @@ class BootStrap {
 		 * Crear libros de prueba
 		 */
 		
-		def libro1 = new Libro(titulo: "The hitchhiker's guide to the galaxy", autor: 'Douglas Adams', isbn: '0330258648').save()
-		def libro2 = new Libro(titulo: '1984', autor: 'George Orwell', isbn: '0451524934').save()
-		def libro3 = new Libro(titulo: 'The restaurant at the end of the universe', autor: 'Douglas Adams', isbn: '0345391810').save()
-		def libro4 = new Libro(titulo: "The hitchhiker's guide to the galaxy", autor: 'Douglas Adams', isbn: '0230258648').save()
+		def libro1 = new Libro(titulo: "The hitchhiker's guide to the galaxy", autor: 'Douglas Adams', isbn: '0330258648', ejemplaresDisponibles: 10).save()
+		def libro2 = new Libro(titulo: '1984', autor: 'George Orwell', isbn: '0451524934', ejemplaresDisponibles: 10).save()
+		def libro3 = new Libro(titulo: 'The restaurant at the end of the universe', autor: 'Douglas Adams', isbn: '0345391810', ejemplaresDisponibles: 10).save()
+		def libro4 = new Libro(titulo: "The hitchhiker's guide to the galaxy", autor: 'Douglas Adams', isbn: '0230258648', ejemplaresDisponibles: 1).save()
 		def libro5 = new Libro(titulo: '1984', autor: 'George Orwell', isbn: '0251524934').save()
 		def libro6 = new Libro(titulo: 'The restaurant at the end of the universe', autor: 'Douglas Adams', isbn: '0245391810').save()
 		def libro7 = new Libro(titulo: "The hitchhiker's guide to the galaxy", autor: 'Douglas Adams', isbn: '0430258648').save()

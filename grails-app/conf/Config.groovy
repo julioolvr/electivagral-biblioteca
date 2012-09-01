@@ -99,3 +99,9 @@ grails.gorm.default.mapping = {
 	version false
 	autoTimestamp false
 }
+
+/*
+	CUSTOM CONFIG
+*/
+
+prestamo.limiteDevolucion = 7
