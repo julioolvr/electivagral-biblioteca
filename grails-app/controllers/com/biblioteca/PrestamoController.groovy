@@ -51,7 +51,11 @@ class PrestamoController {
 			render(view: "create", model: [prestamo: prestamo])
 			return
 		}
-
+		
+		// TODO: Mover a un beforeSave o algo así
+		prestamo.libro.ejemplaresDisponibles--
+		prestamo.libro.save()
+		
 		flash.message = message(code: 'default.created.message', args: [message(code: 'prestamo.label', default: 'Prestamo'), prestamo.id])
 		redirect(action: "show", id: prestamo.id)
 	}
