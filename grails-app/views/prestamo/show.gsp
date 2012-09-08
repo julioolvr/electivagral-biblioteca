@@ -1,4 +1,3 @@
-
 <%@ page import="com.biblioteca.Prestamo" %>
 <!doctype html>
 <html>
@@ -57,9 +56,9 @@
 					<fieldset class="buttons">
 						<g:hiddenField name="id" value="${prestamo?.id}" />
 						<a href="${createLink(action:'renovar', id:prestamo.id)}">Renovar préstamo</a>
-						<a href="${createLink(action:'devolver', id:prestamo.id)}">Registrar devolución</a>
-<%--						<g:link class="edit" action="edit" id="${prestamo?.id}"><g:message code="default.button.edit.label" default="Edit" /></g:link>--%>
-<%--						<g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />--%>
+						<g:if test="${!prestamo.devuelto()}">
+							<a href="${createLink(action:'devolver', id:prestamo.id)}">Registrar devolución</a>
+						</g:if>
 					</fieldset>
 				</g:form>
 			</div>

@@ -32,7 +32,16 @@ class Prestamo {
 		fechaRealDevolucion column: 'fechaRealDevolucion'
 	}
 	
-	Prestamo() {
-		
+	Boolean puedeRenovarse() {
+		libro.tieneReservas()
+	}
+	
+	Boolean devuelto() {
+		fechaRealDevolucion != null
+	}
+	
+	Boolean devolver() {
+		fechaRealDevolucion = new Date()
+		libro.devolver()
 	}
 }

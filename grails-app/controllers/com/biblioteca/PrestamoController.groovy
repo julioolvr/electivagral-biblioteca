@@ -125,7 +125,7 @@ class PrestamoController {
 	
 	def renovar(Long id) {
 		conPrestamo(id) { prestamo ->
-			if (prestamo.libro.tieneReservas()) {
+			if (!prestamo.puedeRenovarse()) {
 				// TODO: i18n
 				flash.message = 'Este libro tiene reservas pendientes, no se puede renovar el préstamo.'
 				redirect(action: "list")
@@ -138,11 +138,11 @@ class PrestamoController {
 	
 	def generarRenovacion(Long id) {
 		conPrestamo(id) { prestamo ->
-			if (prestamo.libro.tieneReservas()) {
+			if (!prestamo.puedeRenovarse()) {
 				// TODO: i18n
 				flash.message = 'Este libro tiene reservas pendientes, no se puede renovar el préstamo.'
-						redirect(action: "list")
-						return
+				redirect(action: "list")
+				return
 			}
 			
 			prestamo.fechaDevolucion = new Date() + grailsApplication.config.prestamo.limiteDevolucion
@@ -155,9 +155,22 @@ class PrestamoController {
 	def devolver(Long id) {
 		conUsuarioLogueado {
 			conPrestamo(id) { prestamo ->
-				prestamo.fechaRealDevolucion = new Date()
-				prestamo.libro.ejemplaresDisponibles++
-				prestamo.save()
+				if (prestamo.devuelto()) {
+					flash.message = 'El préstamo ya fue devuelto'
+					flash.error = true
+					redirect action: 'show', params: [id: prestamo.id]
+					return
+				}
+				
+				prestamo.devolver()
+				
+				if (!prestamo.save()) {
+					flash.message = 'Hubo un error registrando la devolución del libro'
+					flash.error = true
+					redirect action: 'show', params: [id: prestamo.id]
+					return
+				}
+				
 				flash.message = 'Se ha devuelto el libro'
 				redirect action: 'list'
 			}

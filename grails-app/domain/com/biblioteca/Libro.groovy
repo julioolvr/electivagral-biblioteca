@@ -56,4 +56,8 @@ class Libro {
 		// TODO: Ver, esto puede cambiar a un Reserva.findAllByLibroAndFechaFinReservaIsNull
 		ejemplaresDisponibles < 0
 	}
+	
+	void devolver() {
+		ejemplaresDisponibles++
+	}
 }
