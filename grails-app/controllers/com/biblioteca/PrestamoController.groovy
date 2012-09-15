@@ -24,9 +24,9 @@ class PrestamoController {
 		conUsuarioLogueado { socio ->
 			def parametros = [socio:socio]
 					
-					if (params.idLibro) {
-						parametros += [libro:Libro.get(params.idLibro)]
-					}
+			if (params.idLibro) {
+				parametros += [libro:Libro.get(params.idLibro)]
+			}
 			
 			[prestamo: new Prestamo(params + parametros)]
 		}

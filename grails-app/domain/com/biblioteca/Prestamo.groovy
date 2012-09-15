@@ -9,8 +9,12 @@ class Prestamo {
 	Date fechaRealDevolucion
 	
 	static constraints = {
-		libro nullable: false, validator: {
-			it.ejemplaresDisponibles > 0
+		libro nullable: false, validator: { libro, prestamo, errores ->
+			if (!libro.hayStockDisponible())
+				errores.reject 'faltaStock', 'No hay stock disponible para un préstamo.'
+				
+			if (prestamo.socio.tieneLibroPrestado(libro))
+				errores.reject 'yaPrestado', 'Ya tiene un préstamo activo para este libro.'
 		}
 		socio nullable: false
 		fechaPedido nullable: false

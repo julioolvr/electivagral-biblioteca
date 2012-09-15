@@ -33,4 +33,8 @@ class Socio {
 		"${dni} - ${nombre}"
 	}
 	
+	Boolean tieneLibroPrestado(libro) {
+		// TODO: Cambiar por un count
+		Prestamo.findAllByLibroAndSocioAndFechaRealDevolucionIsNull(libro, this) as Boolean
+	}
 }

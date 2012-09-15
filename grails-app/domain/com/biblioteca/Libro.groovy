@@ -48,7 +48,7 @@ class Libro {
 	 * Hay stock disponible para realizar un préstamo.
 	 * @return
 	 */
-	Boolean getHayStockDisponible() {
+	Boolean hayStockDisponible() {
 		ejemplaresDisponibles > 0
 	}
 	

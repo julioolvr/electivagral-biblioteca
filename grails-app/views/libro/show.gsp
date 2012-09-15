@@ -17,7 +17,7 @@
 				<h4>${libro.autor}</h4>
 				
 				<p>
-					<g:if test="${!libro.hayStockDisponible}">
+					<g:if test="${!libro.hayStockDisponible()}">
 						<span class="radius alert label">Sin stock</span>
 					</g:if>
 				</p>

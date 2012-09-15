@@ -29,7 +29,7 @@
 				<h4><g:message code="general.masPedidos"/></h4>
 				<ul>
 					<g:each in="${masPedidos}">
-						<li>${it.titulo} <g:if test="${!it.hayStockDisponible}"><span class="radius alert label">Sin stock</span></g:if></li>
+						<li>${it.titulo} <g:if test="${!it.hayStockDisponible()}"><span class="radius alert label">Sin stock</span></g:if></li>
 					</g:each>
 				</ul>
 			</div>
