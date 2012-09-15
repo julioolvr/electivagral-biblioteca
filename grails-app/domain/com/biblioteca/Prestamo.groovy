@@ -36,6 +36,10 @@ class Prestamo {
 		fechaRealDevolucion column: 'fechaRealDevolucion'
 	}
 	
+	String toString() {
+		"${libro} - Fecha de devolución ${fechaDevolucion}"
+	}
+	
 	Boolean puedeRenovarse() {
 		libro.tieneReservas()
 	}

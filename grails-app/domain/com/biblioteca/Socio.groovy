@@ -37,4 +37,12 @@ class Socio {
 		// TODO: Cambiar por un count
 		Prestamo.findAllByLibroAndSocioAndFechaRealDevolucionIsNull(libro, this) as Boolean
 	}
+	
+	List getPrestamosPendientes() {
+		Prestamo.findAllBySocioAndFechaDevolucionGreaterThanAndFechaRealDevolucionIsNull this, new Date(), [fetch: [libro: 'join']]
+	}
+	
+	List getPrestamosExpirados() {
+		Prestamo.findAllBySocioAndFechaDevolucionLessThanEqualsAndFechaRealDevolucionIsNull this, new Date(), [fetch: [libro: 'join']]
+	}
 }

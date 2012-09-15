@@ -6,6 +6,10 @@ class AuthController {
 		def socio = Socio.findByLoginAndPassword(login, password)
 		
 		if (socio) {
+			// Mostrar devoluciones pendientes al socio
+			flash.prestamosPendientes = socio.prestamosPendientes
+			flash.prestamosExpirados = socio.prestamosExpirados
+			
 			session.usuario = socio
 			redirect controller: 'index'
 		} else {

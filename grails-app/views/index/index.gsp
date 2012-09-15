@@ -9,6 +9,22 @@
 			<g:if test="${flash.message}">
 				<div class="alert-box ${flash.error ? 'alert' : ''}" role="status">${flash.message}</div>
 			</g:if>
+			<g:if test="${flash.prestamosExpirados}">
+				El préstamos de los siguientes libros ya expiró:
+				<ul>
+					<g:each in="${flash.prestamosExpirados}">
+						<li>${it}</li>
+					</g:each>
+				</ul>
+			</g:if>
+			<g:if test="${flash.prestamosPendientes}">
+				Tiene los siguientes libros en su poder:
+				<ul>
+					<g:each in="${flash.prestamosPendientes}">
+						<li>${it}</li>
+					</g:each>
+				</ul>
+			</g:if>
 			<h2><g:message code="general.ultimosLibros"/></h2>
 			<div class="eight columns">
 				<div id="ultimos-libros">
