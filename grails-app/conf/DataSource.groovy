@@ -14,7 +14,7 @@ environments {
     development {
         dataSource {
 			driverClassName = "com.mysql.jdbc.Driver"
-            dbCreate = "create-drop" // one of 'create', 'create-drop', 'update', 'validate', ''
+            dbCreate = "update" // one of 'create', 'create-drop', 'update', 'validate', ''
             url = "jdbc:mysql://localhost/biblioteca"
 			username = "root"
 			password = "root"
