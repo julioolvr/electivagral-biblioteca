@@ -27,13 +27,6 @@ class BootStrap {
 		def libro10 = new Libro(titulo: "The hitchhiker's guide to the galaxy", autor: 'Douglas Adams', isbn: '0330558648').save()
 		def libro11 = new Libro(titulo: '1984', autor: 'George Orwell', isbn: '0451524935').save()
 		def libro12 = new Libro(titulo: 'The restaurant at the end of the universe', autor: 'Douglas Adams', isbn: '0345391815').save()
-		
-		/*
-		 * Préstamos de prueba
-		 */
-		new Prestamo(socio: socioTest, libro: libro1, fechaPedido: new Date())
-		new Prestamo(socio: socioTesto, libro: libro1, fechaPedido: new Date())
-		new Prestamo(socio: socioTesty, libro: libro2, fechaPedido: new Date())
 	}
 	
 	def destroy = {

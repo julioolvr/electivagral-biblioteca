@@ -2,95 +2,159 @@ package com.biblioteca
 
 import org.springframework.dao.DataIntegrityViolationException
 
+@Mixin([com.biblioteca.mixins.UsuariosHelper])
 class ReservaController {
 
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+	static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-    def index() {
-        redirect(action: "list", params: params)
-    }
+	def index() {
+		redirect(action: "list", params: params)
+	}
 
-    def list(Integer max) {
-        params.max = Math.min(max ?: 10, 100)
-        [reservaInstanceList: Reserva.list(params), reservaInstanceTotal: Reserva.count()]
-    }
+	def list(Integer max) {
+		conUsuarioLogueado { socio ->
+			params.max = Math.min(max ?: 10, 100)
+			def reservas = Reserva.findAllBySocio(socio, params)
+			[reservaList: reservas, reservaTotal: reservas.size]
+		}
+	}
 
-    def create() {
-        [reservaInstance: new Reserva(params)]
-    }
+	def create() {
+		conUsuarioLogueado { socio ->
+			def parametros = [socio:socio]
+			def libro
+			
+			if (params.idLibro) {
+				libro = Libro.get(params.idLibro)
+				parametros += [libro:libro]
+			}
+			
+			// TODO: Si hay stock, mandarlo a hacer un préstamo en vez de una reserva
+			// TODO: Un usuario no puede reservar un libro que tiene prestado
+			// TODO: Un usuario no puede reservar un libro que tiene reservado
+			
+			[reserva: new Reserva(params + parametros)]
+		}
+	}
 
-    def save() {
-        def reservaInstance = new Reserva(params)
-        if (!reservaInstance.save(flush: true)) {
-            render(view: "create", model: [reservaInstance: reservaInstance])
-            return
-        }
+	def save() {
+		conUsuarioLogueado { socio ->
+			def parametros = params
+			
+			parametros += [fechaReserva: new Date()]
+			
+			def reserva = new Reserva(parametros)
+			if (!reserva.save(flush: true)) {
+				render(view: "create", model: [reserva: reserva])
+				return
+			}
+			
+			reserva.libro.ejemplaresDisponibles--
+			reserva.libro.save()
+			
+			flash.message = message(code: 'default.created.message', args: [message(code: 'reserva.label', default: 'Reserva'), reserva.id])
+			redirect(action: "show", id: reserva.id)
+		}
+	}
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'reserva.label', default: 'Reserva'), reservaInstance.id])
-        redirect(action: "show", id: reservaInstance.id)
-    }
+	def show(Long id) {
+		conUsuarioLogueado { socio ->
+			def reserva = Reserva.get(id)
+			
+			if (!reserva) {
+				flash.message = message(code: 'default.not.found.message', args: [message(code: 'reserva.label', default: 'Reserva'), id])
+				redirect(action: "list")
+				return
+			}
+			
+			[reserva: reserva]
+		}
+	}
 
-    def show(Long id) {
-        def reservaInstance = Reserva.get(id)
-        if (!reservaInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'reserva.label', default: 'Reserva'), id])
-            redirect(action: "list")
-            return
-        }
-
-        [reservaInstance: reservaInstance]
-    }
+	def generarPrestamo(Long id) {
+		conUsuarioLogueado { socio ->
+			def reserva = Reserva.get(id)
+			
+			if (!reserva) {
+				flash.message = message(code: 'default.not.found.message', args: [message(code: 'reserva.label', default: 'Reserva'), id])
+				redirect(action: "list")
+				return
+			}
+			
+			if (reserva.socio != socio) {
+				flash.message = "La reserva no le pertenece."
+				redirect(action: "list")
+				return
+			}
+			
+			def prestamo = new Prestamo(libro:reserva.libro,
+				socio:socio,
+				fechaPedido:new Date(),
+				fechaDevolucion:new Date() + grailsApplication.config.prestamo.limiteDevolucion
+			)
+			
+			if (prestamo.save()) {
+				// TODO: Mover a un beforeSave o algo así
+				prestamo.libro.ejemplaresDisponibles--
+				prestamo.libro.save()
+				
+				flash.message = message(code: 'default.created.message', args: [message(code: 'prestamo.label', default: 'Prestamo'), prestamo.id])
+				redirect(action: "show", id: prestamo.id)
+				redirect(controller: 'prestamo', action: 'show', id: prestamo.id)
+			}
+		}
+	}
 
     def edit(Long id) {
-        def reservaInstance = Reserva.get(id)
-        if (!reservaInstance) {
+        def reserva = Reserva.get(id)
+        if (!reserva) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'reserva.label', default: 'Reserva'), id])
             redirect(action: "list")
             return
         }
 
-        [reservaInstance: reservaInstance]
+        [reserva: reserva]
     }
 
     def update(Long id, Long version) {
-        def reservaInstance = Reserva.get(id)
-        if (!reservaInstance) {
+        def reserva = Reserva.get(id)
+        if (!reserva) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'reserva.label', default: 'Reserva'), id])
             redirect(action: "list")
             return
         }
 
         if (version != null) {
-            if (reservaInstance.version > version) {
-                reservaInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
+            if (reserva.version > version) {
+                reserva.errors.rejectValue("version", "default.optimistic.locking.failure",
                           [message(code: 'reserva.label', default: 'Reserva')] as Object[],
                           "Another user has updated this Reserva while you were editing")
-                render(view: "edit", model: [reservaInstance: reservaInstance])
+                render(view: "edit", model: [reserva: reserva])
                 return
             }
         }
 
-        reservaInstance.properties = params
+        reserva.properties = params
 
-        if (!reservaInstance.save(flush: true)) {
-            render(view: "edit", model: [reservaInstance: reservaInstance])
+        if (!reserva.save(flush: true)) {
+            render(view: "edit", model: [reserva: reserva])
             return
         }
 
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'reserva.label', default: 'Reserva'), reservaInstance.id])
-        redirect(action: "show", id: reservaInstance.id)
+        flash.message = message(code: 'default.updated.message', args: [message(code: 'reserva.label', default: 'Reserva'), reserva.id])
+        redirect(action: "show", id: reserva.id)
     }
 
     def delete(Long id) {
-        def reservaInstance = Reserva.get(id)
-        if (!reservaInstance) {
+        def reserva = Reserva.get(id)
+        if (!reserva) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'reserva.label', default: 'Reserva'), id])
             redirect(action: "list")
             return
         }
 
         try {
-            reservaInstance.delete(flush: true)
+            reserva.delete(flush: true)
             flash.message = message(code: 'default.deleted.message', args: [message(code: 'reserva.label', default: 'Reserva'), id])
             redirect(action: "list")
         }

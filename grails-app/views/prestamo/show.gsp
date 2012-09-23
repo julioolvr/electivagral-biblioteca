@@ -52,15 +52,15 @@
 					</g:if>
 					
 				</ul>
-				<g:form>
-					<fieldset class="buttons">
-						<g:hiddenField name="id" value="${prestamo?.id}" />
-						<a href="${createLink(action:'renovar', id:prestamo.id)}">Renovar préstamo</a>
-						<g:if test="${!prestamo.devuelto()}">
+				<g:if test="${!prestamo.devuelto()}">
+					<g:form>
+						<fieldset class="buttons">
+							<g:hiddenField name="id" value="${prestamo?.id}" />
+							<a href="${createLink(action:'renovar', id:prestamo.id)}">Renovar préstamo</a>
 							<a href="${createLink(action:'devolver', id:prestamo.id)}">Registrar devolución</a>
-						</g:if>
-					</fieldset>
-				</g:form>
+						</fieldset>
+					</g:form>
+				</g:if> 
 			</div>
 		</div>
 	</body>

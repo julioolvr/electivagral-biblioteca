@@ -38,11 +38,20 @@ class Socio {
 		Prestamo.findAllByLibroAndSocioAndFechaRealDevolucionIsNull(libro, this) as Boolean
 	}
 	
+	Boolean puedePedirPrestamo(libro) {
+		!tieneLibroPrestado(libro)
+	}
+	
 	List getPrestamosPendientes() {
 		Prestamo.findAllBySocioAndFechaDevolucionGreaterThanAndFechaRealDevolucionIsNull this, new Date(), [fetch: [libro: 'join']]
 	}
 	
 	List getPrestamosExpirados() {
 		Prestamo.findAllBySocioAndFechaDevolucionLessThanEqualsAndFechaRealDevolucionIsNull this, new Date(), [fetch: [libro: 'join']]
+	}
+	
+	// Sobrecarga de operadores
+	boolean equals(socio) {
+		this.id == socio.id
 	}
 }

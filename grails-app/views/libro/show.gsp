@@ -28,19 +28,20 @@
 				</p>
 				
 				<g:if test="${session.usuario}">
-					<a href="${createLink(controller:'prestamo', action:'create', params:[idLibro:libro.id])}">Solicitar préstamo</a>
+					<g:if test="${libro.hayStockDisponible()}">
+						<a href="${createLink(controller:'prestamo', action:'create', params:[idLibro:libro.id])}">Solicitar préstamo</a>
+					</g:if>
+					<g:elseif test="${libro.puedeReservarLibro(session.usuario)}">
+						<a href="${createLink(controller:'reserva', action:'create', params:[idLibro:libro.id])}">Reservar libro</a>
+					</g:elseif>
+					<g:else>
+						El libro no está disponible.
+					</g:else>
 				</g:if>
 				<g:else>
 					Iniciá sesión para solicitar un préstamo
 				</g:else>
 				<a href="${createLink(controller:'libro')}">Volver</a>
-<%--				<g:form>--%>
-<%--					<fieldset class="buttons">--%>
-<%--						<g:hiddenField name="id" value="${libro?.id}" />--%>
-<%--						<g:link class="edit" action="edit" id="${libro?.id}"><g:message code="default.button.edit.label" default="Edit" /></g:link>--%>
-<%--						<g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />--%>
-<%--					</fieldset>--%>
-<%--				</g:form>--%>
 			</div>
 			
 			<div class="four columns">

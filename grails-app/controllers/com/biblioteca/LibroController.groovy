@@ -34,6 +34,7 @@ class LibroController {
 
 	def show(Long id) {
 		def libro = Libro.get(id)
+
 		if (!libro) {
 			flash.message = message(code: 'default.not.found.message', args: [message(code: 'libro.label', default: 'Libro'), id])
 			redirect(action: "list")

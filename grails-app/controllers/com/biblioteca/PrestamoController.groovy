@@ -23,9 +23,21 @@ class PrestamoController {
 	def create() {
 		conUsuarioLogueado { socio ->
 			def parametros = [socio:socio]
-					
+			def libro
+			
 			if (params.idLibro) {
-				parametros += [libro:Libro.get(params.idLibro)]
+				libro = Libro.get(params.idLibro)
+			}
+			
+			if (!libro.hayStockDisponible()) {
+				flash.message = 'No hay stock disponible. Puede realizar una reserva'
+				flash.error = true
+				redirect controller: 'libro', action: 'show', id: params.idLibro
+				return
+			}
+					
+			if (libro) {
+				parametros += [libro:libro]
 			}
 			
 			[prestamo: new Prestamo(params + parametros)]
@@ -36,6 +48,7 @@ class PrestamoController {
 		conUsuarioLogueado {
 			def parametros = params
 			
+			// TODO: Ver de poner las fechas como default
 			parametros += [
 				fechaPedido: new Date(),
 				fechaDevolucion: new Date() + grailsApplication.config.prestamo.limiteDevolucion
