@@ -10,9 +10,6 @@
 	<body>
 		<div id="create-prestamo" class="content row" role="main">
 			<h1><g:message code="default.create.label" args="[entityName]" /></h1>
-			<g:if test="${flash.message}">
-			<div class="message" role="status">${flash.message}</div>
-			</g:if>
 			<g:hasErrors bean="${prestamo}">
 			<ul class="errors" role="alert">
 				<g:eachError bean="${prestamo}" var="error">

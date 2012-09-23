@@ -8,9 +8,6 @@
 	</head>
 	<body>
 		<div id="mostrar-libro" class="row">
-			<g:if test="${flash.message}">
-				<div class="message" role="status">${flash.message}</div>
-			</g:if>
 			<h2>${libro.titulo}</h2>
 			
 			<div class="eight columns">
@@ -28,10 +25,10 @@
 				</p>
 				
 				<g:if test="${session.usuario}">
-					<g:if test="${libro.hayStockDisponible()}">
+					<g:if test="${libro.hayStockDisponible(session.usuario)}">
 						<a href="${createLink(controller:'prestamo', action:'create', params:[idLibro:libro.id])}">Solicitar préstamo</a>
 					</g:if>
-					<g:elseif test="${libro.puedeReservarLibro(session.usuario)}">
+					<g:elseif test="${libro.puedeReservarlo(session.usuario)}">
 						<a href="${createLink(controller:'reserva', action:'create', params:[idLibro:libro.id])}">Reservar libro</a>
 					</g:elseif>
 					<g:else>

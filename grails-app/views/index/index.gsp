@@ -6,9 +6,6 @@
 	</head>
 	<body>
 		<div class="row">
-			<g:if test="${flash.message}">
-				<div class="alert-box ${flash.error ? 'alert' : ''}" role="status">${flash.message}</div>
-			</g:if>
 			<g:if test="${flash.prestamosExpirados}">
 				El préstamos de los siguientes libros ya expiró:
 				<ul>

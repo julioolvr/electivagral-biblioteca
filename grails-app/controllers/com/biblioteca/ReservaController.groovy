@@ -2,7 +2,7 @@ package com.biblioteca
 
 import org.springframework.dao.DataIntegrityViolationException
 
-@Mixin([com.biblioteca.mixins.UsuariosHelper])
+@Mixin([com.biblioteca.mixins.UsuariosHelper, com.biblioteca.mixins.ReservasHelper])
 class ReservaController {
 
 	static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
@@ -21,39 +21,29 @@ class ReservaController {
 
 	def create() {
 		conUsuarioLogueado { socio ->
-			def parametros = [socio:socio]
-			def libro
-			
-			if (params.idLibro) {
-				libro = Libro.get(params.idLibro)
-				parametros += [libro:libro]
+			conLibroParaReserva params.idLibro, socio, { libro ->
+				def parametros = [socio:socio, libro:libro]
+				[reserva: new Reserva(params + parametros)]
 			}
-			
-			// TODO: Si hay stock, mandarlo a hacer un préstamo en vez de una reserva
-			// TODO: Un usuario no puede reservar un libro que tiene prestado
-			// TODO: Un usuario no puede reservar un libro que tiene reservado
-			
-			[reserva: new Reserva(params + parametros)]
 		}
 	}
 
 	def save() {
 		conUsuarioLogueado { socio ->
-			def parametros = params
-			
-			parametros += [fechaReserva: new Date()]
-			
-			def reserva = new Reserva(parametros)
-			if (!reserva.save(flush: true)) {
-				render(view: "create", model: [reserva: reserva])
-				return
+			conLibroParaReserva params.libro.id, socio, { libro ->
+				def parametros = params
+				
+				parametros += [fechaReserva: new Date()]
+						
+				def reserva = new Reserva(parametros)
+				if (!reserva.save(flush: true)) {
+					render(view: "create", model: [reserva: reserva])
+					return
+				}
+				
+				flash.message = message(code: 'default.created.message', args: [message(code: 'reserva.label', default: 'Reserva'), reserva.id])
+				redirect(action: "show", id: reserva.id)
 			}
-			
-			reserva.libro.ejemplaresDisponibles--
-			reserva.libro.save()
-			
-			flash.message = message(code: 'default.created.message', args: [message(code: 'reserva.label', default: 'Reserva'), reserva.id])
-			redirect(action: "show", id: reserva.id)
 		}
 	}
 
@@ -97,10 +87,17 @@ class ReservaController {
 				// TODO: Mover a un beforeSave o algo así
 				prestamo.libro.ejemplaresDisponibles--
 				prestamo.libro.save()
+				reserva.fechaFinReserva = new Date()
+				reserva.save()
 				
 				flash.message = message(code: 'default.created.message', args: [message(code: 'prestamo.label', default: 'Prestamo'), prestamo.id])
-				redirect(action: "show", id: prestamo.id)
 				redirect(controller: 'prestamo', action: 'show', id: prestamo.id)
+				return
+			} else {
+				flash.message = "Error"
+				flash.error = true
+				println prestamo.errors
+				redirect(action: 'show', id: reserva.id)
 			}
 		}
 	}

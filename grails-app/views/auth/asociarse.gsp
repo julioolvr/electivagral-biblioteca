@@ -7,10 +7,6 @@
 		<div class="row container">
 			<h2><g:message code="usuarios.asociarse.titulo"/></h2>
 			
-			<g:if test="${flash.message}">
-				<div class="message" role="status">${flash.message}</div>
-			</g:if>
-			
 			<g:form id="asociarse-form" class="four columns" controller="auth" action="guardar">
 				<label for="dni"><g:message code="socio.atributos.dni" /></label>
 				<g:textField name="dni" value="${socio?.dni}" class="${hasErrors(bean: socio, field: 'dni', 'error')}" />

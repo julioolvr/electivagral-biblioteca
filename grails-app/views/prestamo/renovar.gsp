@@ -11,9 +11,6 @@
 		<div id="show-prestamo" class="content scaffold-show" role="main">
 			<div class="container row">
 				<h2>Renovar préstamo</h2>
-				<g:if test="${flash.message}">
-				<div class="message" role="status">${flash.message}</div>
-				</g:if>
 				<ul class="property-list prestamo">
 				
 					<g:if test="${prestamo?.libro}">

@@ -11,7 +11,7 @@ class Prestamo {
 	static constraints = {
 		libro nullable: false, validator: { libro, prestamo, errores ->
 			if (!prestamo.fechaRealDevolucion) { // Si no está devolviendo el libro
-				if (!libro.hayStockDisponible())
+				if (!libro.hayStockDisponible(prestamo.socio))
 					errores.reject 'faltaStock', 'No hay stock disponible para un préstamo, puede realizar una reserva.'
 					
 				if (prestamo.socio.tieneLibroPrestado(libro))

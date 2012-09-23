@@ -42,6 +42,11 @@ class Socio {
 		!tieneLibroPrestado(libro)
 	}
 	
+	Boolean tieneLibroReservado(libro) {
+		// TODO: Cambiar por un count
+		Reserva.findAllByLibroAndSocioAndFechaFinReservaIsNull(libro, this) as Boolean
+	}
+	
 	List getPrestamosPendientes() {
 		Prestamo.findAllBySocioAndFechaDevolucionGreaterThanAndFechaRealDevolucionIsNull this, new Date(), [fetch: [libro: 'join']]
 	}

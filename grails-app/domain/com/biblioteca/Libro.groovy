@@ -48,12 +48,15 @@ class Libro {
 	 * Hay stock disponible para realizar un préstamo.
 	 * @return
 	 */
-	Boolean hayStockDisponible() {
-		ejemplaresDisponibles > 0
+	Boolean hayStockDisponible(socio) {
+		def fechaDisponibilidad = this.getFechaDisponibilidad(socio)
+		fechaDisponibilidad && (fechaDisponibilidad <= new Date())
 	}
 	
 	Boolean tieneReservas() {
-		ejemplaresDisponibles < 0
+		// TODO: Cambiar por un count
+		def reservas = Reserva.findAllByLibroAndFechaFinReservaIsNull this
+		reservas.size > 0
 	}
 	
 	void devolver() {
@@ -66,48 +69,77 @@ class Libro {
 	 * @return
 	 */
 	Date getFechaDisponibilidad(socio) {
-		/*
-		 * Préstamos no devueltos para este libro.
-		 */
-		def prestamos = Prestamo.findAllByLibroAndFechaRealDevolucionIsNull this, [sort: 'fechaDevolucion', order: 'asc']
+		def reserva = Reserva.findByLibroAndSocioAndFechaFinReservaIsNotNull this, socio
 		
-		/*
-		 * Busco si este socio ya tiene reserva para el libro
-		 */
-		def reserva = Reserva.findByLibroAndSocio this, socio
-		
-		/*
-		 * Reservas para este libro no cumplidas, y de otros socios.
-		 * * Si el socio tiene una reserva, solo las anteriores a esa.
-		 */
-		def reservas
+		def reservasPendientes
 		if (reserva)
 			// TODO: Cambiar por un count
-			reservas = Reserva.findAllByLibroAndSocioNotEqualAndFechaReservaLessThanAndFechaFinReservaIsNull this, socio, reserva.fechaReserva
+			reservasPendientes = Reserva.findAllByLibroAndSocioNotEqualAndFechaReservaLessThanAndFechaFinReservaIsNull this, socio, reserva.fechaReserva
 		else
-			reservas = Reserva.findAllByLibroAndSocioNotEqualAndFechaFinReservaIsNull this, socio
-
-		if (!prestamos && !reservas)
-			/*
-			 * Si no hay préstamos ni reservas de otros socios,
-			 * el libro ya está disponible
-			 */
-			return new Date()
+			reservasPendientes = Reserva.findAllByLibroAndSocioNotEqualAndFechaFinReservaIsNull this, socio
 		
-		if (prestamos.size > reservas.size)
-			/*
-			 * Si hay más préstamos que reservas, estará disponible cuando el primer
-			 * préstamo se libere, descontando tantos préstamos como reservas haya.
-			 */
-			return prestamos[reservas.size].fechaDevolucion
+		def prestamos = Prestamo.findAllByLibroAndFechaRealDevolucionIsNull this, [sort: 'fechaDevolucion', order: 'asc']
 		
-		/*
-		 * Si hay más reservas que préstamos, no se puede reservar
-		 */
-		return null
+		if (this.ejemplaresDisponibles > 0){
+			/*
+			 * Si hay ejemplares disponibles, hay dos alternativas:
+			 * * No hay reservas pendientes de otros socios, el libro ya está disponible
+			 */
+				
+			if (!reservasPendientes.size)
+				return new Date()
+			
+			/*
+			 * Hay reservas pendientes:
+			 * * Si hay más ejemplares disponibles que reservas pendientes, ya está disponible
+			 */
+			if (ejemplaresDisponibles > reservasPendientes.size)
+				return new Date()
+			
+			/*
+			 * Hay la misma cantidad de ejemplares disponibles que de reservas pendientes:
+			 */
+			if (ejemplaresDisponibles == reservasPendientes.size) {
+				/*
+				 * Si hay préstamos, estará disponible cuando el primer préstamo se libere
+				 */
+				if (prestamos)
+					return prestamos[0].fechaDevolucion
+				else
+					/*
+					 * Si no, están todos los ejemplares reservados
+					 */
+					return null
+			}
+			
+			/*
+			 * Hay más reservas pendientes que ejemplares disponibles:
+			 * Descartando las reservas que ya tienen su ejemplar disponible,
+			 * Si hay menos reservas que préstamos, tomo la fecha en que se libera el préstamo correspondiente
+			 */
+			if (reservasPendientes.size - ejemplaresDisponibles < prestamos.size)
+				return prestamos[reservasPendientes.size - ejemplaresDisponibles].fechaDevolucion
+			
+			/*
+			 * Si hay la misma cantidad o más, todas las copias están reservadas
+			 */
+			return null
+		} else {
+			/*
+			 * Si no hay ejemplares disponibles
+			 * * Si hay menos reservas pendientes que préstamos, dar la fecha de devolución del préstamo correspondiente
+			 */
+			if (reservasPendientes.size < prestamos.size)
+				return prestamos[reservasPendientes.size].fechaDevolucion
+				
+			/*
+			 * Si hay la misma cantidad o más, todos los ejemplares están reservados
+			 */
+			return null
+		}
 	}
 	
-	Boolean puedeReservarLibro(socio) {
+	Boolean puedeReservarlo(socio) {
 		this.getFechaDisponibilidad() as Boolean
 	}
 }

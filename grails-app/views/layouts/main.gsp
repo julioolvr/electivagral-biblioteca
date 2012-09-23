@@ -28,6 +28,11 @@
 				<g:render template="/auth/authPanel" />
 			</div>
 		</div>
+		<g:if test="${flash.message}">
+			<div class="row">
+					<div class="alert-box ${flash.error ? 'alert' : ''}" role="status">${flash.message}</div>
+			</div>
+		</g:if>
 		<div class="row">
 			<div class="six columns centered">
 				<ul class="nav-bar">

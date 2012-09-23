@@ -11,9 +11,6 @@
 		<div id="list-prestamo" class="content scaffold-list" role="main">
 			<div class="container row">
 				<h2>Mis préstamos</h2>
-				<g:if test="${flash.message}">
-					<div class="alert-box" role="status">${flash.message}</div>
-				</g:if>
 				<table>
 					<thead>
 						<tr>

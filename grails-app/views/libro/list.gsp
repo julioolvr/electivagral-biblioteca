@@ -11,9 +11,6 @@
 		<div id="list-libro" class="content scaffold-list" role="main">
 			<div class="container row">
 				<h2><g:message code="libros.titulo" /></h2>
-				<g:if test="${flash.message}">
-				<div class="message" role="status">${flash.message}</div>
-				</g:if>
 				<table>
 					<thead>
 						<tr>
