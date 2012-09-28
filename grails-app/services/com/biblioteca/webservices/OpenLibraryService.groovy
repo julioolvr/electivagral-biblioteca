@@ -7,21 +7,25 @@ package com.biblioteca.webservices
  */
 class OpenLibraryService {
 	
+	def disponibilidad = [:]
+	
 	def urlCover(libro) {
 		new URL("http://covers.openlibrary.org/b/isbn/${libro.isbn}-L.jpg?default=false")
 	}
 	
 	def coverDisponible(libro) {
-		return false
+		if (libro.isbn in disponibilidad)
+			return disponibilidad[libro.isbn]
+		
 		def url = urlCover(libro)
 		
 		try {
 			url.getBytes()
 		} catch (e) {
-			return false
+			return disponibilidad[libro.isbn] = false
 		}
 		
-		return true
+		disponibilidad[libro.isbn] = true
 	}
 	
 }
