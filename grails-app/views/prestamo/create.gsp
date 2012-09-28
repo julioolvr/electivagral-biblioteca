@@ -9,7 +9,7 @@
 	</head>
 	<body>
 		<div id="create-prestamo" class="container row" role="main">
-			<h1><g:message code="default.create.label" args="[entityName]" /></h1>
+			<h1><g:message code="prestamo.crear.titulo" args="[entityName]" /></h1>
 			<g:hasErrors bean="${prestamo}">
 			<ul class="errors" role="alert">
 				<g:eachError bean="${prestamo}" var="error">

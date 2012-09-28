@@ -9,7 +9,7 @@
 	<body>
 		<div id="show-prestamo" class="content scaffold-show" role="main">
 			<div class="container row">
-				<h2>Mis préstamos</h2>
+				<h2><g:message code="default.show.label" args="[entityName]" /></h2>
 				<ul class="property-list prestamo">
 				
 					<g:if test="${prestamo?.libro}">

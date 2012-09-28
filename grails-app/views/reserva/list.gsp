@@ -5,12 +5,12 @@
 	<head>
 		<meta name="layout" content="main">
 		<g:set var="entityName" value="${message(code: 'reserva.label', default: 'Reserva')}" />
-		<title><g:message code="default.list.label" args="[entityName]" /></title>
+		<title><g:message code="reserva.lista.titulo" /></title>
 	</head>
 	<body>
 		<div id="list-reserva" class="content scaffold-list" role="main">
 			<div class="container row">
-				<h1><g:message code="default.list.label" args="[entityName]" /></h1>
+				<h1><g:message code="reserva.lista.titulo" /></h1>
 				<g:if test="${reservaList}">
 					<table>
 						<thead>
