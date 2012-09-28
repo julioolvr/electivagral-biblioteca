@@ -7,9 +7,9 @@
 		<link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
 		<link rel="apple-touch-icon" href="${resource(dir: 'images', file: 'apple-touch-icon.png')}">
 		<link rel="apple-touch-icon" sizes="114x114" href="${resource(dir: 'images', file: 'apple-touch-icon-retina.png')}">
-		<link rel="stylesheet" href="${resource(dir: 'css', file: 'app.css')}" type="text/css">
 		<link rel="stylesheet" href="${resource(dir: 'css/ui-darkness', file: 'jquery-ui-1.8.23.custom.css')}" type="text/css">
 		<link rel="stylesheet" href="${resource(dir: 'css', file: 'foundation.css')}" type="text/css">
+		<link rel="stylesheet" href="${resource(dir: 'css', file: 'app.css')}" type="text/css">
 		
 		<!-- IE Fix for HTML5 Tags -->
 		<!--[if lt IE 9]>
@@ -20,28 +20,27 @@
 		<r:layoutResources />
 	</head>
 	<body>
-		<div class="row header">
-			<div class="eight columns">
-				<h1><a href="${createLink(controller:'index')}">${message(code:'app.titulo')}</a></h1>
+		<div class="wrapper">
+			<div class="row header">
+				<div class="eight columns">
+					<h1><a href="${createLink(controller:'index')}">${message(code:'app.titulo')}</a></h1>
+				</div>
+				<div class="four columns">
+					<g:render template="/auth/authPanel" />
+				</div>
 			</div>
-			<div class="four columns">
-				<g:render template="/auth/authPanel" />
-			</div>
+			<ul class="nav-bar">
+				<li class="${params.controller == 'index' ? 'active' : ''}"><a href="${createLink(controller:'index')}">Inicio</a></li>
+				<li class="${params.controller == 'libro' ? 'active' : ''}"><a href="${createLink(controller:'libro')}">Libros</a></li>
+			</ul>
+			<g:if test="${flash.message}">
+				<div class="row">
+						<div class="alert-box ${flash.error ? 'alert' : ''}" role="status">${flash.message}</div>
+				</div>
+			</g:if>
+			<g:layoutBody/>
+			<div class="push"></div>
 		</div>
-		<g:if test="${flash.message}">
-			<div class="row">
-					<div class="alert-box ${flash.error ? 'alert' : ''}" role="status">${flash.message}</div>
-			</div>
-		</g:if>
-		<div class="row">
-			<div class="six columns centered">
-				<ul class="nav-bar">
-					<li class="${params.controller == 'index' ? 'active' : ''}"><a href="${createLink(controller:'index')}">Inicio</a></li>
-					<li class="${params.controller == 'libro' ? 'active' : ''}"><a href="${createLink(controller:'libro')}">Libros</a></li>
-				</ul>
-			</div>
-		</div>
-		<g:layoutBody/>
 		<div class="row footer">
 			<div class="two columns">
 				Electiva General<br/>2012

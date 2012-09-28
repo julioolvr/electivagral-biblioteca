@@ -26,7 +26,7 @@
 					<li class="fieldcontain">
 						<span id="socio-label" class="property-label"><g:message code="reserva.socio.label" default="Socio" /></span>
 						
-							<span class="property-value" aria-labelledby="socio-label"><g:link controller="socio" action="show" id="${reserva?.socio?.id}">${reserva?.socio?.encodeAsHTML()}</g:link></span>
+							<span class="property-value" aria-labelledby="socio-label">${reserva?.socio?.encodeAsHTML()}</span>
 						
 					</li>
 					</g:if>

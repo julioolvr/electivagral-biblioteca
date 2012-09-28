@@ -1,16 +1,37 @@
+html, body {
+	height: 100%;
+}
+
+html * {
+	margin: 0;
+}
+
 h1 a, h1 a:hover, h1 a:visited, h1 a:active {
 	color: #fff;
+}
+
+.wrapper {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -60px;
+}
+.footer, .push {
+	height: 60px;
 }
 
 .row.header {
 	width: 100%;
 	background: #504d44;
-	color: #fff;
+}
+
+.row.header h1 {
+	margin-top: 10px;
 }
 
 .auth.panel {
 	height: 127px;
-	padding: 8px;
+	padding: 10px;
 }
 
 .loginForm label.inline {
@@ -21,14 +42,24 @@ h1 a, h1 a:hover, h1 a:visited, h1 a:active {
 	line-height: 24px;
 }
 
+.nav-bar {
+	margin-top: 0;
+	background-color: #504D44;
+}
+
 .row.container {
+	margin-top: 10px;
 	margin-bottom: 10px;
 }
 
 .row.footer {
 	background: #504d44;
 	color: #fff;
-	border: solid 1px #E6E6E6;
+	width: 100%;
+}
+
+.row.footer > div {
+	padding-top: 10px;
 }
 
 .container .error small, .container small.error {

@@ -2,6 +2,10 @@
 	background: #504d44;
 }
 
+.ultimo-container {
+	height: 260px;
+}
+
 .coverLibro {
 	background: #504d44;
 	color: white;
@@ -9,4 +13,8 @@
 
 .coverLibro img {
 	width: 100%;
+}
+
+.coverLibro .info {
+	margin-top: 10px;
 }

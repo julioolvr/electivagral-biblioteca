@@ -25,7 +25,7 @@
 					<li class="fieldcontain">
 						<span id="socio-label" class="property-label"><g:message code="prestamo.socio.label" default="Socio" /></span>
 						
-							<span class="property-value" aria-labelledby="socio-label"><g:link controller="socio" action="show" id="${prestamo?.socio?.id}">${prestamo?.socio?.encodeAsHTML()}</g:link></span>
+							<span class="property-value" aria-labelledby="socio-label">${prestamo?.socio?.encodeAsHTML()}</span>
 						
 					</li>
 					</g:if>
@@ -51,11 +51,11 @@
 				</ul>
 				<g:if test="${!prestamo.devuelto()}">
 					<g:form>
-						<fieldset class="buttons">
+						<div class="buttons row">
 							<g:hiddenField name="id" value="${prestamo?.id}" />
 							<a href="${createLink(action:'renovar', id:prestamo.id)}">Renovar préstamo</a>
 							<a href="${createLink(action:'devolver', id:prestamo.id)}">Registrar devolución</a>
-						</fieldset>
+						</div>
 					</g:form>
 				</g:if> 
 			</div>

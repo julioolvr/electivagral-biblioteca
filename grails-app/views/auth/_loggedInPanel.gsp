@@ -1,7 +1,6 @@
-<p>Hola ${session.usuario.nombre}</p>
-<p>
-<%--	TODO: i18n	--%>
-	<a href="${createLink(controller:'prestamo')}">Mis préstamos</a>
-	<a href="${createLink(controller:'reserva')}">Mis reservas</a>
-	<a href="${createLink(controller:'auth', action:'logout')}">Salir</a>
-</p>
+<h4>¡Bienvenido ${session.usuario.nombre}!</h4>
+<ul class="square">
+	<li><a href="${createLink(controller:'prestamo')}">Mis préstamos</a></li>
+	<li><a href="${createLink(controller:'reserva')}">Mis reservas</a></li>
+	<li><a href="${createLink(controller:'auth', action:'logout')}">Salir</a></li>
+</ul>

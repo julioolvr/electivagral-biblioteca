@@ -7,7 +7,7 @@
 		<title><g:message code="default.create.label" args="[entityName]" /></title>
 	</head>
 	<body>
-		<div id="create-reserva" class="content scaffold-create" role="main">
+		<div id="create-reserva" class="container row" role="main">
 			<h1><g:message code="default.create.label" args="[entityName]" /></h1>
 			<g:hasErrors bean="${reserva}">
 			<ul class="errors" role="alert">
@@ -17,12 +17,8 @@
 			</ul>
 			</g:hasErrors>
 			<g:form action="save" >
-				<fieldset class="form">
-					<g:render template="form"/>
-				</fieldset>
-				<fieldset class="buttons">
-					<g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />
-				</fieldset>
+				<g:render template="form"/>
+				<g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />
 			</g:form>
 		</div>
 	</body>

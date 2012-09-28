@@ -13,6 +13,8 @@ class AuthController {
 			session.usuario = socio
 			redirect controller: 'index'
 		} else {
+			flash.message = 'Nombre de usuario o contraseña incorrectos.'
+			flash.error = true
 			session.usuario = null
 			redirect controller: 'index'
 		}

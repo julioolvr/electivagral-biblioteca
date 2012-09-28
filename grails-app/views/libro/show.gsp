@@ -7,11 +7,11 @@
 		<title><g:message code="default.show.label" args="[entityName]" /></title>
 	</head>
 	<body>
-		<div id="mostrar-libro" class="row">
+		<div id="mostrar-libro" class="container row">
 			<h2>${libro.titulo}</h2>
 			
 			<div class="eight columns">
-				<h4>${libro.autor}</h4>
+				<h4 class="subheader">${libro.autor}</h4>
 				
 				<p>
 					<g:if test="${!libro.hayStockDisponible()}">
