@@ -83,10 +83,12 @@ class ReservaController {
 				fechaDevolucion:new Date() + grailsApplication.config.prestamo.limiteDevolucion
 			)
 			
+			prestamo.libro.ejemplaresDisponibles--
+			
 			if (prestamo.save()) {
 				// TODO: Mover a un beforeSave o algo así
-				prestamo.libro.ejemplaresDisponibles--
 				prestamo.libro.save()
+				
 				reserva.fechaFinReserva = new Date()
 				reserva.save()
 				

@@ -22,50 +22,35 @@ class PrestamoController {
 
 	def create() {
 		conUsuarioLogueado { socio ->
-			def parametros = [socio:socio]
-			def libro
-			
-			if (params.idLibro) {
-				libro = Libro.get(params.idLibro)
+			conLibroParaPrestamo(socio, params.idLibro) { libro ->
+				def parametros = [socio:socio, libro:libro]
+				[prestamo: new Prestamo(params + parametros)]
 			}
-			
-			if (!libro.hayStockDisponible()) {
-				flash.message = 'No hay stock disponible. Puede realizar una reserva'
-				flash.error = true
-				redirect controller: 'libro', action: 'show', id: params.idLibro
-				return
-			}
-					
-			if (libro) {
-				parametros += [libro:libro]
-			}
-			
-			[prestamo: new Prestamo(params + parametros)]
 		}
 	}
 
 	def save() {
-		conUsuarioLogueado {
-			def parametros = params
-			
-			// TODO: Ver de poner las fechas como default
-			parametros += [
-				fechaPedido: new Date(),
-				fechaDevolucion: new Date() + grailsApplication.config.prestamo.limiteDevolucion
-			]
-			
-			def prestamo = new Prestamo(parametros)
-			if (!prestamo.save(flush: true)) {
-				render(view: "create", model: [prestamo: prestamo])
-				return
+		conUsuarioLogueado { socio ->
+			conLibroParaPrestamo(socio, params.libro.id) { libro ->
+				def parametros = params
+				
+				// TODO: Ver de poner las fechas como default
+				parametros += [
+					fechaPedido: new Date(),
+					fechaDevolucion: new Date() + grailsApplication.config.prestamo.limiteDevolucion
+				]
+				
+				def prestamo = new Prestamo(parametros)
+				prestamo.libro.prestar()
+				
+				if (!prestamo.save(flush: true)) {
+					render(view: "create", model: [prestamo: prestamo])
+					return
+				}
+				
+				flash.message = message(code: 'default.created.message', args: [message(code: 'prestamo.label', default: 'Prestamo'), prestamo.id])
+				redirect(action: "show", id: prestamo.id)
 			}
-			
-			// TODO: Mover a un beforeSave o algo así
-			prestamo.libro.ejemplaresDisponibles--
-			prestamo.libro.save()
-			
-			flash.message = message(code: 'default.created.message', args: [message(code: 'prestamo.label', default: 'Prestamo'), prestamo.id])
-			redirect(action: "show", id: prestamo.id)
 		}
 	}
 
@@ -158,8 +143,9 @@ class PrestamoController {
 				return
 			}
 			
-			prestamo.fechaDevolucion = new Date() + grailsApplication.config.prestamo.limiteDevolucion
+			prestamo.renovar()
 			prestamo.save()
+			
 			flash.message = 'Préstamo renovado'
 			redirect action: 'show', id: prestamo.id
 		}

@@ -5,7 +5,7 @@
 	<head>
 		<meta name="layout" content="main">
 		<g:set var="entityName" value="${message(code: 'libro.label', default: 'Libro')}" />
-		<title><g:message code="default.list.label" args="[entityName]" /></title>
+		<title><g:message code="libro.lista.titulo" /></title>
 	</head>
 	<body>
 		<div id="list-libro" class="content scaffold-list" role="main">

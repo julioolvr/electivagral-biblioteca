@@ -34,7 +34,7 @@
 				<li class="${params.controller == 'libro' ? 'active' : ''}"><a href="${createLink(controller:'libro')}">Libros</a></li>
 			</ul>
 			<g:if test="${flash.message}">
-				<div class="row">
+				<div class="message row">
 						<div class="alert-box ${flash.error ? 'alert' : ''}" role="status">${flash.message}</div>
 				</div>
 			</g:if>

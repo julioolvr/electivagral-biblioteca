@@ -59,8 +59,16 @@ class Libro {
 		reservas.size > 0
 	}
 	
+	void prestar() {
+		ejemplaresDisponibles--
+	}
+	
 	void devolver() {
 		ejemplaresDisponibles++
+	}
+	
+	Reserva reservaPendienteDeSocio(socio) {
+		Reserva.findByLibroAndSocioAndFechaFinReservaIsNotNull this, socio
 	}
 	
 	/**
@@ -69,7 +77,7 @@ class Libro {
 	 * @return
 	 */
 	Date getFechaDisponibilidad(socio) {
-		def reserva = Reserva.findByLibroAndSocioAndFechaFinReservaIsNotNull this, socio
+		def reserva = reservaPendienteDeSocio socio
 		
 		def reservasPendientes
 		if (reserva)
